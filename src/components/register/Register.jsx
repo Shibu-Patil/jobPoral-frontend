@@ -15,18 +15,25 @@ const Register = () => {
     confirmPassword:"",
     college:"",
     joinedInstitute:"",
-    instituteName:""
+    instituteName:"",
+    skills:[],
+    positionApplyingFor:[]
   })
 
   const handelChange=(e)=>{
     let {name,value}=e.target
     setUserData((preVal)=>({...preVal,[name]:value}))
   }
+  const handelSubmit=(e)=>{
+    e.preventDefault()
+    console.log(userData);
+    
+  }
   
   const {email,mobile,yearOfPassout,password,confirmPassword,college,joinedInstitute,instituteName}=userData
   return (
     <div className='size-full flex justify-center items-center'>
-      <form action="" className='w-1/3 h-[90%] flex justify-between '>
+      <form action="" className='w-1/3 h-[90%] flex justify-between ' onSubmit={handelSubmit}>
         <div className='size-full rounded-2xl shadow-2xl relative flex flex-col p-5 gap-6 overflow-y-scroll'>
          {
           loading&&<div className='size-full flex justify-center items-center absolute opacity-40'>
@@ -45,12 +52,12 @@ const Register = () => {
           </div> 
 
            <div className={`w-full min-h-10  justify-center items-center border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md ${mobile? "border-2 rounded-md":""}`}>
-            <input type="email"  id='mobile'  className='size-full outline-0 ' name='mobile' value={mobile} onChange={handelChange}/>
+            <input type="text"  id='mobile'  className='size-full outline-0 ' name='mobile' value={mobile} onChange={handelChange}/>
             <label htmlFor="mobile" className={`absolute left-2  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${mobile?"absolute bg-white -top-2.5 text-[12px] px-1":"top-1"}`}>Mobile</label>
           </div> 
 
             <div className={`w-full min-h-10  justify-center items-center border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md ${yearOfPassout? "border-2 rounded-md":""}`}>
-              <input type="email"  id='yearOfPassout'  className='size-full outline-0 ' name='yearOfPassout' value={yearOfPassout} onChange={handelChange}/>
+              <input type="text"  id='yearOfPassout'  className='size-full outline-0 ' name='yearOfPassout' value={yearOfPassout} onChange={handelChange}/>
               <label htmlFor="yearOfPassout" className={`absolute left-2  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${yearOfPassout?"absolute bg-white -top-2.5 text-[12px] px-1":"top-1"}`}>Year Of Passout</label>
           </div> 
           {/* <div className='w-full border-b-2 p-2'>
@@ -78,11 +85,11 @@ const Register = () => {
             
           </div> */}
           <div className='w-full min-h-10'>
-            <DropDown values={["HTML","CSS","JS","React","HTM","CS","J","Ract"]} feildName="Select Skills"></DropDown>
+            <DropDown values={["HTML","CSS","JS","React","HTM","CS","J","Ract"]} feildName="Select Skills" userData={userData} setUserData={setUserData} feild="skills"></DropDown>
           </div>
 
           <div className='w-full min-h-10'>
-            <DropDown values={["developement","testing"]} feildName="Position Applying For"></DropDown>
+            <DropDown values={["developement","testing"]} feildName="Position Applying For" userData={userData} setUserData={setUserData} feild="positionApplyingFor"></DropDown>
           </div>
 
            <div className='w-full min-h-10 flex justify-start  items-center border-b-2 px-2' onChange={handelChange}>

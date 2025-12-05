@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 
-const DropDown = ({ values,feildName }) => {
+const DropDown = ({ values, feildName, userData, setUserData, feild }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -11,42 +11,58 @@ const DropDown = ({ values,feildName }) => {
   };
 
   const handleItems = (e, item) => {
-    e.stopPropagation(); // prevent closing dropdown
+    e.stopPropagation();
 
     if (!selectedItems.includes(item)) {
-      setSelectedItems([...selectedItems, item]);
+      const updated = [...selectedItems, item];
+
+      setSelectedItems(updated);
+      setUserData((preVal) => ({
+        ...preVal,
+        [feild]: updated,
+      }));
     }
   };
-const removeItems=(e,ele)=>{
-    setSelectedItems(selectedItems.filter((el)=>el!=ele))
-    setShowDropdown(false)
-    e.stopPropagation()
-}
+
+  const removeItems = (e, ele) => {
+    e.stopPropagation();
+
+    const updated = selectedItems.filter((el) => el !== ele);
+
+    setSelectedItems(updated);
+    setUserData((preVal) => ({
+      ...preVal,
+      [feild]: updated,
+    }));
+
+    setShowDropdown(false);
+  };
+
   const unselectedItems = values.filter((v) => !selectedItems.includes(v));
 
   return (
     <div
-      className="size-full  border-b-2 flex justify-between px-3 items-center relative"
+      className="size-full border-b-2 flex justify-between px-3 items-center relative"
       onClick={toggleDropDown}
     >
-            <div className="flex gap-4 max-w-[402px] overflow-x-scroll">
-            {!selectedItems.length
-                ? feildName
-                : selectedItems.reverse().map((ele, index) => (
-                    <div
-                    key={index}
-                    className="bg-black/10 px-2 py-1 rounded-sm flex items-center gap-1 relative"
-                    >
-                    {ele}
-                    <div className="text-red-600 text-lg" onClick={(e)=>{
-                        removeItems(e,ele)
-                    }}>
-                        <RxCross2 />
-                    </div>
-                    </div>
-                ))}
-            </div>
-
+      <div className="flex gap-4 max-w-[402px] overflow-x-scroll">
+        {!selectedItems.length
+          ? feildName
+          : [...selectedItems].map((ele, index) => (
+              <div
+                key={index}
+                className="bg-black/10 px-2 py-1 rounded-sm flex items-center gap-1 relative"
+              >
+                {ele}
+                <div
+                  className="text-red-600 text-lg"
+                  onClick={(e) => removeItems(e, ele)}
+                >
+                  <RxCross2 />
+                </div>
+              </div>
+            ))}
+      </div>
 
       <div
         className={`text-xl duration-75 ${
