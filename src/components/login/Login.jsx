@@ -20,10 +20,9 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Login Data:", loginData);
 
-    // Dispatch your login API call here
-    // Example:
-    // dispatch(loginUser(loginData))
+    // Later: dispatch(loginUser(loginData))
   };
 
   return (
@@ -33,23 +32,22 @@ const Login = () => {
         className="w-1/3 h-[75%] flex justify-between"
       >
         <div className="size-full rounded-2xl shadow-2xl relative flex flex-col p-5 gap-6">
-          {/* LOADING OVERLAY */}
+          
           {loading && (
             <div className="size-full absolute top-0 left-0 bg-white/40 flex justify-center items-center">
               <Logo className="scale-[3]" />
             </div>
           )}
 
-          {/* Form Content */}
           {!loading && (
             <>
               <h1 className="text-2xl font-bold flex justify-center">
                 Login
               </h1>
 
-              {/* Email Field */}
               <div
-                className={`w-full min-h-10 border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md 
+                className={`w-full min-h-10 border-b-2 px-2 relative group 
+                focus-within:border-2 focus-within:rounded-md 
                 ${email ? "border-2 rounded-md" : ""}`}
               >
                 <input
@@ -63,17 +61,18 @@ const Login = () => {
                 <label
                   htmlFor="email"
                   className={`absolute left-2 duration-100 group-focus-within:-top-2.5 
-                    group-focus-within:bg-white group-focus-within:text-[12px] group-focus-within:px-1 
+                    group-focus-within:bg-white group-focus-within:text-[12px] 
+                    group-focus-within:px-1 
                     ${email ? "absolute bg-white -top-2.5 text-[12px] px-1" : "top-1"}`}
                 >
                   Email
                 </label>
               </div>
 
-              {/* Password Field */}
               <div
-                className={`w-full min-h-10 border-b-2 px-2 relative group focus-within:border-2 
-                focus-within:rounded-md ${password ? "border-2 rounded-md" : ""}`}
+                className={`w-full min-h-10 border-b-2 px-2 relative group 
+                focus-within:border-2 focus-within:rounded-md 
+                ${password ? "border-2 rounded-md" : ""}`}
               >
                 <input
                   type="password"
@@ -86,14 +85,14 @@ const Login = () => {
                 <label
                   htmlFor="password"
                   className={`absolute left-2 duration-100 group-focus-within:-top-2.5 
-                    group-focus-within:bg-white group-focus-within:text-[12px] group-focus-within:px-1 
+                    group-focus-within:bg-white group-focus-within:text-[12px] 
+                    group-focus-within:px-1 
                     ${password ? "absolute bg-white -top-2.5 text-[12px] px-1" : "top-1"}`}
                 >
                   Password
                 </label>
               </div>
 
-              {/* Submit Button */}
               <div className="w-full min-h-10">
                 <button className="size-full bg-blue-900 text-white rounded-xl">
                   Login
