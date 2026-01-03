@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import DropDown from './DropDown'
 import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../../slice/authSlice'
+import { validatePassword } from "val-pass";
+import toast from 'react-hot-toast'
+
 
 
 const Register = () => {
@@ -25,11 +28,41 @@ const Register = () => {
     skills:[],
     positionApplyingFor:[]
   })
+  const [passwordError, setPasswordError] = useState("");
+const [confirmError, setConfirmError] = useState(false);
 
-  const handelChange=(e)=>{
-    let {name,value}=e.target
-    setUserData((preVal)=>({...preVal,[name]:value}))
+const handelChange = (e) => {
+  let { name, value } = e.target;
+
+  // 🔐 Password validation
+  if (name === "password") {
+    const { validateAll,getAllValidationErrorMessage } = validatePassword(value, 8);
+    const errorMsg =!validateAll() && getAllValidationErrorMessage();
+    setPasswordError(value ? errorMsg : "");
+
+    // reset confirm password error when password changes
+    if (userData.confirmPassword && value !== userData.confirmPassword) {
+      setConfirmError(true);
+    } else {
+      setConfirmError(false);
+    }
   }
+
+  // 🔁 Confirm password validation
+  if (name === "confirmPassword") {
+    if (value && value !== userData.password) {
+      setConfirmError(true);
+    } else {
+      setConfirmError(false);
+    }
+  }
+
+  setUserData((preVal) => ({
+    ...preVal,
+    [name]: value,
+  }));
+};
+
   const handelSubmit=async (e)=>{
     e.preventDefault()
     // console.log(userData);
@@ -38,15 +71,32 @@ const Register = () => {
       name,email,mobile,password,positionApplyingFor:positionApplyingFor.join(),skills,yearOfPassout,joinedInstitute,instituteName,college
     }
     // console.log(payload);
+    const { validateAll } = validatePassword(password, 8);
+
+if (!validateAll()) {
+  return;
+}
+
+if (password !== confirmPassword) {
+  toast.error("password and confirm password does not match")
+  return;
+}
     
-    const data=await disptch(registerUser(payload))
+    try {
+      const data=await disptch(registerUser(payload))
     console.log(data);
-    
+    if(data.meta.requestStatus=="fulfilled"){
+          
     naviage("/verify-otp",{state:{
       email,
       userId:data.payload.userId
     }})
     
+    }
+    } catch (error) {
+      console.log(error);
+      
+    }
   }
   
   const {name,email,mobile,yearOfPassout,password,confirmPassword,college,joinedInstitute,instituteName}=userData
@@ -111,7 +161,7 @@ const Register = () => {
             
           </div> */}
           <div className='w-full min-h-10'>
-            <DropDown values={["HTML","CSS","JS","React","HTM","CS","J","Ract"]} feildName="Select Skills" userData={userData} setUserData={setUserData} feild="skills"></DropDown>
+            <DropDown values={["HTML","CSS","JS","React","JAVA","SPRING","SPRING BOOT","SELENIUM","MANUAL TESTING","API TESTING","PYTHON","FLASK","DJANGO","DATA SCIENCE","DATA ANALYSIS","POWER BI","SQL","MONGO DB","DSA"]} feildName="Select Skills" userData={userData} setUserData={setUserData} feild="skills"></DropDown>
           </div>
 
           <div className='w-full min-h-10'>
@@ -158,7 +208,11 @@ const Register = () => {
             <label htmlFor="password" className={`absolute left-2  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${password?"absolute bg-white -top-2.5 text-[12px] px-1":"top-1"}`}>Password</label>
           </div> 
 
-           <div className={`w-full min-h-10  justify-center items-center border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md ${confirmPassword? "border-2 rounded-md":""}`}>
+          {passwordError && (
+  <p className="text-red-500 text-sm">{passwordError}</p>
+)}
+
+           <div className={`w-full min-h-10  justify-center items-center border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md ${confirmPassword? "border-2 rounded-md":""} ${!confirmError?"border-black":"border-red-500"}`}>
             <input type="password"  id='confirmPassword'  className='size-full outline-0 ' name='confirmPassword' value={confirmPassword} onChange={handelChange}/>
             <label htmlFor="confirmPassword" className={`absolute left-2  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${confirmPassword?"absolute bg-white -top-2.5 text-[12px] px-1":"top-1"}`}>Confirm Password</label>
           </div> 

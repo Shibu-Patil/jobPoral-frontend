@@ -29,10 +29,10 @@ const VerifyOtp = () => {
         // toast.success('OTP verified successfully');
         navigate('/'); // navigate to home page
       } else {
-        toast.error(result.payload || 'OTP verification failed');
+        // toast.error(result.payload || 'OTP verification failed');
       }
     } catch (error) {
-      toast.error('Something went wrong');
+      // toast.error('Something went wrong');
     }
   };
 
