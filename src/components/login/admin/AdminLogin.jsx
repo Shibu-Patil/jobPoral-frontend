@@ -1,53 +1,49 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import Logo from "../logo/Logo";
-import { loginUser } from "../../slice/authSlice";
 
-const Login = () => {
-  const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
+import { useNavigate } from "react-router-dom";
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
+import { loginAdmin, registerAdmin } from "../../../slice/authSlice";
+import Logo from "../../logo/Logo";
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData((prev) => ({ ...prev, [name]: value }));
-  };
+const AdminLogin = () => {
+    const {loading} =useSelector(state=>state.auth)
+  const naviage=useNavigate()
+  const disptch=useDispatch()
+  // console.log(loading);
+  const [userData,setUserData]=useState({
+    email:"",
+    password:"",
+    confirmPassword:"",
+  })
 
-  const { email, password } = loginData;
+  const handelChange=(e)=>{
+    let {name,value}=e.target
+    setUserData((preVal)=>({...preVal,[name]:value}))
+  }
+  const handelSubmit=async (e)=>{
+    e.preventDefault()
+    // console.log(userData);
+    const {email,password}=userData
+    const payload={email,password}
+    console.log(payload);
+    
+    const data=await disptch(loginAdmin(payload))
+    console.log(data);
+    naviage("/admin-home")
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const payload = { email, password };
-
-    try {
-      const result = await dispatch(loginUser(payload));
-
-      // Check if login was successful
-      if (result.meta.requestStatus === "fulfilled") {
-        // toast.success("Login successful");
-        navigate("/home"); // navigate only on success
-      } else {
-        // toast.error(result.payload || "Login failed");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
-
+    
+  }
+  
+  const {email,password}=userData
   return (
-    <div className="size-full flex justify-center items-center">
+<div className="size-full flex justify-center items-center">
       <form
-        onSubmit={handleSubmit}
-        className="w-1/3 h-[50%] flex flex-col justify-between max-lg:w-1/2 max-md:w-[80%] max-sm:w-[95%]"
+        onSubmit={handelSubmit}
+        className="w-1/3 h-[40%] flex justify-between max-lg:w-1/2 max-md:w-[80%] max-sm:w-[95%]"
       >
         <div className="size-full rounded-2xl shadow-2xl relative flex flex-col p-5 gap-6">
+          
           {loading && (
             <div className="size-full absolute top-0 left-0 bg-white/40 flex justify-center items-center">
               <Logo className="scale-[3]" />
@@ -57,7 +53,7 @@ const Login = () => {
           {!loading && (
             <>
               <h1 className="text-2xl font-bold flex justify-center">
-                Login
+                Admin Login
               </h1>
 
               <div
@@ -70,7 +66,7 @@ const Login = () => {
                   id="email"
                   name="email"
                   value={email}
-                  onChange={handleChange}
+                  onChange={handelChange}
                   className="size-full outline-0"
                 />
                 <label
@@ -94,7 +90,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   value={password}
-                  onChange={handleChange}
+                  onChange={handelChange}
                   className="size-full outline-0"
                 />
                 <label
@@ -113,20 +109,12 @@ const Login = () => {
                   Login
                 </button>
               </div>
-
-              {/* Link to registration page */}
-              <div className="text-center mt-2">
-                <span>Don't have an account? </span>
-                <Link to="/register" className="text-blue-700 underline">
-                  Register here
-                </Link>
-              </div>
             </>
           )}
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default AdminLogin

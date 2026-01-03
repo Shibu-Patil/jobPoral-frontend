@@ -9,3 +9,17 @@
 ::-webkit-scrollbar{
     display: none;
 }
+
+
+/* Hide placeholder when empty */
+input[type="date"].empty::-webkit-datetime-edit-text,
+input[type="date"].empty::-webkit-datetime-edit-month-field,
+input[type="date"].empty::-webkit-datetime-edit-day-field,
+input[type="date"].empty::-webkit-datetime-edit-year-field {
+  color: transparent;
+}
+
+/* Show value when not empty */
+input[type="date"]:not(.empty) {
+  color: black;
+}

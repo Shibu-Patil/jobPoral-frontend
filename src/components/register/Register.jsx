@@ -1,13 +1,19 @@
 import React, { useState } from 'react'
 import Logo from '../logo/Logo'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import DropDown from './DropDown'
+import { useNavigate } from 'react-router-dom'
+import { registerUser } from '../../slice/authSlice'
+
 
 const Register = () => {
 
   const {loading} =useSelector(state=>state.auth)
+  const naviage=useNavigate()
+  const disptch=useDispatch()
   // console.log(loading);
   const [userData,setUserData]=useState({
+    name:"",
     email:"",
     mobile:"",
     yearOfPassout:"",
@@ -24,16 +30,29 @@ const Register = () => {
     let {name,value}=e.target
     setUserData((preVal)=>({...preVal,[name]:value}))
   }
-  const handelSubmit=(e)=>{
+  const handelSubmit=async (e)=>{
     e.preventDefault()
-    console.log(userData);
+    // console.log(userData);
+    const {email,mobile,password,positionApplyingFor,skills,yearOfPassout,joinedInstitute,instituteName,college,name}=userData
+    const payload={
+      name,email,mobile,password,positionApplyingFor:positionApplyingFor.join(),skills,yearOfPassout,joinedInstitute,instituteName,college
+    }
+    // console.log(payload);
+    
+    const data=await disptch(registerUser(payload))
+    console.log(data);
+    
+    naviage("/verify-otp",{state:{
+      email,
+      userId:data.payload.userId
+    }})
     
   }
   
-  const {email,mobile,yearOfPassout,password,confirmPassword,college,joinedInstitute,instituteName}=userData
+  const {name,email,mobile,yearOfPassout,password,confirmPassword,college,joinedInstitute,instituteName}=userData
   return (
     <div className='size-full flex justify-center items-center'>
-      <form action="" className='w-1/3 h-[90%] flex justify-between ' onSubmit={handelSubmit}>
+      <form action="" className='w-1/3 h-[90%] flex justify-between max-lg:w-1/2 max-md:w-2/3 max-sm:w-[95%]' onSubmit={handelSubmit}>
         <div className='size-full rounded-2xl shadow-2xl relative flex flex-col p-5 gap-6 overflow-y-scroll'>
          {
           loading&&<div className='size-full flex justify-center items-center absolute opacity-40'>
@@ -46,6 +65,13 @@ const Register = () => {
             <div className='w-full min-h-10  justify-center items-center'>
                 <h1 className='text-2xl font-bold flex justify-center items-center'>Register</h1>
           </div>
+
+          <div className={`w-full min-h-10  justify-center items-center border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md ${name? "border-2 rounded-md":""}`}>
+            <input type="text"  id='name'  className='size-full outline-0 ' name='name' value={name} onChange={handelChange}/>
+            <label htmlFor="email" className={`absolute left-2  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${name?"absolute bg-white -top-2.5 text-[12px] px-1":"top-1"}`}>Name</label>
+          </div> 
+
+
           <div className={`w-full min-h-10  justify-center items-center border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md ${email? "border-2 rounded-md":""}`}>
             <input type="email"  id='email'  className='size-full outline-0 ' name='email' value={email} onChange={handelChange}/>
             <label htmlFor="email" className={`absolute left-2  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${email?"absolute bg-white -top-2.5 text-[12px] px-1":"top-1"}`}>Email</label>
@@ -89,12 +115,12 @@ const Register = () => {
           </div>
 
           <div className='w-full min-h-10'>
-            <DropDown values={["developement","testing"]} feildName="Position Applying For" userData={userData} setUserData={setUserData} feild="positionApplyingFor"></DropDown>
+            <DropDown values={["development","testing"]} feildName="Position Applying For" userData={userData} setUserData={setUserData} feild="positionApplyingFor"></DropDown>
           </div>
 
-           <div className='w-full min-h-10 flex justify-start  items-center border-b-2 px-2' onChange={handelChange}>
-            <label htmlFor="" className='w-1/2'>Joined Any Institute</label>
-            <div className='w-1/2 flex gap-10'>
+           {/* <div className={`relative w-full min-h-10 flex justify-start  items-center border-b-2 px-2 group focus-within:border-2 focus-within:rounded-md ${joinedInstitute?"border-2 rounded-md":""} max-md:flex-col`} onChange={handelChange}>
+            <label htmlFor="" className={`absolute  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${joinedInstitute?"-top-2.5 bg-white text-[12px] px-1":""}` }>Joined Any Institute</label>
+            <div className={`flex gap-10 group-focus-within:px-1 ${joinedInstitute?"px-1":"pl-60 "} `}>
              <div>
                <input type="radio" name='joinedInstitute' value="yes"/> Yes
              </div>
@@ -103,7 +129,16 @@ const Register = () => {
               </div>
             </div>
             
-          </div> 
+          </div>  */}
+
+          <div className={`w-full min-h-10  justify-center items-center border-b-2 px-2 relative group focus-within:border-2 focus-within:rounded-md ${joinedInstitute? "border-2 rounded-md":""}`} onChange={handelChange}>
+                        <label htmlFor="email" className={`absolute left-2  duration-100 group-focus-within:-top-2.5 group-focus-within:bg-white  group-focus-within:text-[12px] group-focus-within:px-1 ${joinedInstitute?"absolute bg-white -top-2.5 text-[12px] px-1":"top-1"}`}>Joined Institute</label>
+            <select name="joinedInstitute" id="" className='size-full outline-0'>
+              <option value=""></option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
 
             {
               joinedInstitute=="yes" && 
