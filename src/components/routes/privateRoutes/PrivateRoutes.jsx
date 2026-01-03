@@ -2,16 +2,19 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const PrivateRoutes = () => {
-  const { token, isAuthenticated } = useSelector((state) => state.auth);
+const PrivateRoutes = ({children}) => {
+  const { token } = useSelector((state) => state.auth);
 
+  console.log(token);
+  
 
-  if (!token || !isAuthenticated) {
+  if (!token) {
     return <Navigate to="/" replace />;
   }
 
   // ✅ logged in
-  return <Outlet />;
+  return <>
+  {children}</>;
 };
 
 export default PrivateRoutes;
