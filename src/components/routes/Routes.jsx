@@ -6,6 +6,7 @@ import VerifyOtp from "../register/VerifyOtp";
 import AdminRegister from "../register/admin/AdminRegister";
 import AdminLogin from "../login/admin/AdminLogin";
 import AdminHome from "../adminHome/AdminHome";
+import PrivateRoutes from "./privateRoutes/PrivateRoutes";
 
 const routes=createBrowserRouter([
     {
@@ -19,7 +20,7 @@ const routes=createBrowserRouter([
         element:<VerifyOtp></VerifyOtp>
     },{
         path:"/home",
-        element:<Home></Home>
+        element:<PrivateRoutes><Home></Home></PrivateRoutes>
     },{
         path:"/admin-register",
         element:<AdminRegister></AdminRegister>
